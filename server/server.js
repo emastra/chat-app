@@ -13,13 +13,26 @@ var io = socketIO(server); // ready to accept connection
 
 app.use(express.static(publicPath));
 
+
 io.on('connection', function(socket) {
   console.log('New user connected');
+
+  socket.emit('newMessage', {
+    from: 'Dave',
+    text: 'meet at 6pm?',
+    createdAt: 123456789
+  });
+
+  socket.on('createMessage', function(message) {
+    console.log('Message to create', message);
+  });
 
   socket.on('disconnect', function() {
     console.log('User was disconnected');
   });
 });
+
+
 
 server.listen(port, function() {
   console.log(`App is up on port ${port}`);
