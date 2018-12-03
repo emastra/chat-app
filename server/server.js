@@ -4,6 +4,7 @@ const express = require('express');
 // socket.io create a websocket server and there is the client library too.
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public') // __dirname is always the directory in which the currently executing script resides
 const port = process.env.PORT || 3000;
 
@@ -16,40 +17,32 @@ var io = socketIO(server); // ready to accept connection
 app.use(express.static(publicPath));
 
 
-io.on('connection', function(socket) {
+io.on('connection', (socket) => {
   console.log('New user connected');
 
-  socket.emit('newMessage', {
-    from: 'admin',
-    text: 'Welcome to the chat app',
-    createdAt: new Date().getTime()
-  });
+  // Admin messages
 
-  socket.broadcast.emit('newMessage', {
-    from: 'admin',
-    text: 'New user joined',
-    createdAt: new Date().getTime()
-  });
+  // respond to the socket which connected
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
 
-  socket.on('createMessage', function(message) {
+  // broadcast to any other already connected sockets
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
+
+
+  // createMessage event listener. Emit to every single connection
+  socket.on('createMessage', (message) => {
     console.log('Message to create', message);
     // socket.emit emits an event to a single conn, io.emit emits an event to every single connection
-    io.emit('newMessage', {
-      from: message.from,
-      text: message.text,
-      createdAt: new Date().getTime()
-    });
+    io.emit('newMessage', generateMessage(message.from, message.text));
   });
 
-
-
-  socket.on('disconnect', function() {
+  socket.on('disconnect', () => {
     console.log('User was disconnected');
   });
 
 });
 
 
-server.listen(port, function() {
+server.listen(port, () => {
   console.log(`App is up on port ${port}`);
 });
