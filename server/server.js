@@ -30,10 +30,12 @@ io.on('connection', (socket) => {
 
 
   // createMessage event listener. Emit to every single connection
-  socket.on('createMessage', (message) => {
+  // acknowledgments allow the request listener to send something back to the request emitter // placing a callback as 2nd arg in the callback function and then call it after...
+  socket.on('createMessage', (message, callback) => {
     console.log('Message to create', message);
     // socket.emit emits an event to a single conn, io.emit emits an event to every single connection
     io.emit('newMessage', generateMessage(message.from, message.text));
+    callback('This is an acknowledge from server.');
   });
 
   socket.on('disconnect', () => {
