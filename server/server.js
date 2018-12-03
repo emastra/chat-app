@@ -19,14 +19,15 @@ app.use(express.static(publicPath));
 io.on('connection', function(socket) {
   console.log('New user connected');
 
-  socket.emit('newMessage', {
-    from: 'Deka',
-    text: 'meet at 6pm?',
-    createdAt: 123456789
-  });
-
   socket.on('createMessage', function(message) {
     console.log('Message to create', message);
+    // we now broadcast the new message to all other users
+    // socket.emit emits an event to a single conn, io.emit emits an event to every single connection
+    io.emit('newMessage', {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    });
   });
 
 
