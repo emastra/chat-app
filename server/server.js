@@ -4,7 +4,7 @@ const express = require('express');
 // socket.io create a websocket server and there is the client library too.
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public') // __dirname is always the directory in which the currently executing script resides
 const port = process.env.PORT || 3000;
 
@@ -36,6 +36,11 @@ io.on('connection', (socket) => {
     // socket.emit emits an event to a single conn, io.emit emits an event to every single connection
     io.emit('newMessage', generateMessage(message.from, message.text));
     callback('This is an acknowledge from server.');
+  });
+
+  // Listen for createLocationMessage
+  socket.on('createLocationMessage', (coords) => {
+    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
   });
 
   socket.on('disconnect', () => {
