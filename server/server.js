@@ -19,9 +19,20 @@ app.use(express.static(publicPath));
 io.on('connection', function(socket) {
   console.log('New user connected');
 
+  socket.emit('newMessage', {
+    from: 'admin',
+    text: 'Welcome to the chat app',
+    createdAt: new Date().getTime()
+  });
+
+  socket.broadcast.emit('newMessage', {
+    from: 'admin',
+    text: 'New user joined',
+    createdAt: new Date().getTime()
+  });
+
   socket.on('createMessage', function(message) {
     console.log('Message to create', message);
-    // we now broadcast the new message to all other users
     // socket.emit emits an event to a single conn, io.emit emits an event to every single connection
     io.emit('newMessage', {
       from: message.from,
