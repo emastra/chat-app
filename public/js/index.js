@@ -1,4 +1,31 @@
+// https://css-tricks.com/now-ever-might-not-need-jquery/
+// https://blog.garstasio.com/you-dont-need-jquery/events/#ancient-browser-support
+
 var socket = io();
+
+function scrollToBottom() {
+  /* If scrollHeight is equal to (clientHeight + scrollTop)
+  means that user is at the bottom of the panel, so we need to scroll down
+  And because the call to scrollToBottom func is done after adding the latest message,
+  we need to add on the last message height as well.
+  to not scroll if the user is just a little bit up, we add the secondlast message height too. */
+
+  // selectors
+  var messagesContainer = document.getElementById('messages');
+  var latestMessage = messagesContainer.lastElementChild;
+  // heights
+  var clientHeight = messagesContainer.clientHeight;
+  var scrollTop = messagesContainer.scrollTop;
+  var scrollHeight = messagesContainer.scrollHeight;
+  latestMessageHeight = latestMessage.offsetHeight;  // Element.getBoundingClientRect() takes transforms into account
+  secondlastMessaggeHeight = latestMessage.previousElementSibling ? latestMessage.previousElementSibling.offsetHeight : 0;
+
+  if (clientHeight + scrollTop + latestMessageHeight + secondlastMessaggeHeight >= scrollHeight) {
+    messagesContainer.scrollTop = scrollHeight;
+  }
+
+}
+
 
 socket.on('connect', function() {
   console.log('Connected to server');
@@ -26,6 +53,7 @@ socket.on('newMessage', function(message) {
   //console.log(html);
   //document.querySelector('#messages').innerHTML = html;
   document.querySelector('#messages').insertAdjacentHTML('beforeend', html); // The insertAdjacentHTML() method parses the specified text as HTML or XML and inserts the resulting nodes into the DOM tree at a specified position. It does not reparse the element it is being used on, and thus it does not corrupt the existing elements inside that element. This avoids the extra step of serialization, making it much faster than direct innerHTML manipulation.
+  scrollToBottom();
 });
 
 socket.on('newLocationMessage', function(message) {
@@ -48,6 +76,7 @@ socket.on('newLocationMessage', function(message) {
     createdAt: formattedTime
   });
   document.querySelector('#messages').insertAdjacentHTML('beforeend', html);
+  scrollToBottom();
 });
 
 // Acknowledgements, just add a callback function as 3rd argument
