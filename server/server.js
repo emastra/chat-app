@@ -35,7 +35,7 @@ io.on('connection', (socket) => {
     console.log('Message to create', message);
     // socket.emit emits an event to a single conn, io.emit emits an event to every single connection
     io.emit('newMessage', generateMessage(message.from, message.text));
-    callback('This is an acknowledge from server.');
+    callback();
   });
 
   // Listen for createLocationMessage
