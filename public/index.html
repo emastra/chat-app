@@ -12,12 +12,12 @@
 
     <div class="chat__sidebar">
       <h3>People</h3>
-      <div id="people">
-      </div>
+      <div id="people"></div>
     </div>
 
     <div class="chat__main">
       <ol id="messages" class="chat__messages"></ol>
+
       <div class="chat__footer">
         <form id="message-form">
           <input type="text" name="message-input" placeholder="Type some message" autofocus autocomplete="off">
@@ -28,8 +28,37 @@
     </div>
 
 
+
+
+    <script id="message-template" type="text/template">
+      <li class="message">
+        <div class="message__title">
+          <h4>{{from}}</h4>
+          <span>{{createdAt}}</span>
+        </div>
+        <div class="message__body">
+          <p>{{text}}</p>
+        </div>
+      </li>
+    </script>
+
+    <script id="location-message-template" type="text/template">
+      <li class="message">
+        <div class="message__title">
+          <h4>{{from}}</h4>
+          <span>{{createdAt}}</span>
+        </div>
+        <div class="message__body">
+          <p>
+            <a href="{{url}}" target="_blank">My current location</a>
+          </p>
+        </div>
+      </li>
+    </script>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/libs/moment.js"></script>
+    <script src="/js/libs/mustache.js"></script>
     <script src="/js/index.js"></script>
   </body>
 </html>
