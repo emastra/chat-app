@@ -10,21 +10,26 @@ socket.on('disconnect', function() {
 
 
 socket.on('newMessage', function(message) {
-  console.log('New message in', message);
+  // time
+  var formattedTime = moment(message.createdAt).format('h:mm a');
+  // create and set elements
   var li = document.createElement('li');
-  li.textContent = `${message.from}: ${message.text}`; // instead of innerHTML, textContent has better performance because its value is not parsed as HTML. Moreover, using textContent can prevent XSS attacks.
-
+  li.textContent = `${message.from} ${formattedTime}: ${message.text}`; // instead of innerHTML, textContent has better performance because its value is not parsed as HTML. Moreover, using textContent can prevent XSS attacks.
+  // append
   document.querySelector('#messages').appendChild(li);
 });
 
 socket.on('newLocationMessage', function(message) {
+  // time
+  var formattedTime = moment(message.createdAt).format('h:mm a');
+  // create and set elements
   var li = document.createElement('li');
   var a = document.createElement('a');
   a.setAttribute('target', '_blank');
   a.textContent = 'My current location';
-
-  li.textContent = `${message.from}: `;
+  li.textContent = `${message.from} ${formattedTime}: `;
   a.setAttribute('href', message.url);
+  // append
   li.appendChild(a);
   document.querySelector('#messages').appendChild(li);
 });
