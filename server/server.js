@@ -64,21 +64,27 @@ io.on('connection', (socket) => {
   // createMessage event listener. Emit to every single connection
   // acknowledgments allow the request listener to send something back to the request emitter // placing a callback as 2nd arg in the callback function and then call it after...
   socket.on('createMessage', (message, callback) => {
-    console.log('Message to create', message);
-    // socket.emit emits an event to a single conn, io.emit emits an event to every single connection
-    io.emit('newMessage', generateMessage(message.from, message.text));
+    var user = users.getUser(socket.id);
+
+    if (user && isRealString(message.text)) {
+      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+    }
     callback();
   });
 
   // Listen for createLocationMessage
   socket.on('createLocationMessage', (coords) => {
-    io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+    var user = users.getUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+    }
   });
 
   socket.on('disconnect', () => {
     console.log('User was disconnected');
     // remove user from the list when disconnet.
-    // Return it so we can check if it was already present in the room for real, and be able to access room inside user 
+    // Return it so we can check if it was already present in the room for real, and be able to access room inside user
     var user = users.removeUser(socket.id);
     if (user) {
       // if removed, send updated list and message
