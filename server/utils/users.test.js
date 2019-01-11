@@ -36,31 +36,33 @@ describe('Users', () => {
   });
 
   it('should remove user', () => {
-    var res = users.removeUser(1);
+    var userId = 1;
+    var res = users.removeUser(userId);
 
-    expect(res).toEqual({
-      id: 1,
-      name: 'Emiliano',
-      room: 'Javascript fans'
-    });
+    expect(res.id).toEqual(userId);
+    expect(users.users.length).toBe(2);
   });
 
   it('should not remove user', () => {
-    var res = users.removeUser(4);
+    var userId = 99;
+    var res = users.removeUser(userId);
 
-    expect(res).toBe(undefined);
+    expect(res).toBeUndefined();
+    expect(users.users.length).toBe(3);
   });
 
   it('should find user', () => {
-    var res = users.getUser(2);
+    var userId = 2;
+    var res = users.getUser(userId);
 
-    expect(res).toEqual(users.users[1]);
+    expect(res.id).toEqual(userId);
   });
 
   it('should not find user', () => {
-    var res = users.getUser(5);
+    var userId = 99;
+    var res = users.getUser(userId);
 
-    expect(res).toEqual(undefined);
+    expect(res).toBeUndefined();
   });
 
   it('should return names for Javascript fans', () => {
