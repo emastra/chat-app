@@ -2,4 +2,8 @@ var isRealString = (str) => {
   return typeof str == 'string' && str.trim().length > 0;
 };
 
-module.exports = {isRealString};
+var ensureCase = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+module.exports = {isRealString, ensureCase};

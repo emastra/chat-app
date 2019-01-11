@@ -7,6 +7,30 @@
   font-size: .95rem;
 }
 
+/* index */
+
+/* .room-card {
+  width: 15em;
+  height: 15em;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.6);
+  transition: 0.3s;
+  background-color: rgba(250, 250, 250, 0.9);
+  margin-left: 2em;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.room-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.6);
+}
+
+.card-text {
+  padding: 2px 16px;
+} */
+
+
+/* forms */
+
 ul, li {
   list-style-position: inside;
 }
@@ -77,6 +101,14 @@ button:disabled {
 .form-field input, .form-field select {
   border: 1px solid #e1e1e1;
   padding: 10px;
+}
+
+/* .form-field input[name="room"] {
+    text-transform: lowercase;
+} */
+
+select {
+  background-color: white;
 }
 
 .chat {

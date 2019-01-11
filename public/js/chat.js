@@ -28,12 +28,18 @@ function scrollToBottom() {
 
 }
 
+/*
+socket.on {disconnect, updateUserList, newMessage, newLocationMessage}
+io.emit {join, createMessage, createLocationMessage}
+*/
 
+// On connect
 socket.on('connect', function() {
   // console.log('Connected to server');
-  var searchParams = new URLSearchParams(window.location.search);
+  // The URLSearchParams() constructor creates and returns a new URLSearchParams object. Leading '?' characters are ignored.
+  var searchParams = new URLSearchParams(window.location.search); // pass to it the querystring
   var paramsObj = {name: searchParams.get('name'), room: searchParams.get('room')};
-
+  console.log(paramsObj.room);
   // acknowledment function set because if someone doesnt join the room it means they proviedd invalid data and we need to kick them back to the join form
   socket.emit('join', paramsObj, function(err) {
     if (err) {

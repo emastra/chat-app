@@ -23,11 +23,20 @@
           <input type="text" name="room">
         </div>
         <div class="form-field">
+          <label>Choose an existing room</label>
+          <select class="">
+            <option value="">--Select--</option>
+            <option value="Test">Test</option>
+          </select>
+        </div>
+        <div class="form-field">
           <button>Join</button>
         </div>
       </form>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/index.js"></script>
   </body>
 
 </html>

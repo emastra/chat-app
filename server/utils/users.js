@@ -69,7 +69,7 @@ class Users {
     return userInArray[0];
     // one-liner: // return this.users.filter((user) => user.id === id)[0];
   }
-  
+
   getUserList(room) {
     var users = this.users.filter((user) => {
       return user.room === room;
@@ -79,6 +79,15 @@ class Users {
     });
 
     return namesArray;
+  }
+
+  getRoomList() {
+    var userRooms = this.users.map((user) => {
+      return user.room;
+    });
+    // from array of rooms names (not unique) make a set (which is unique) and convert it to an array 
+    var rooms = Array.from(new Set(userRooms));
+    return rooms;
   }
 
 }
