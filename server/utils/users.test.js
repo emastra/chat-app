@@ -1,30 +1,83 @@
-// min 15:07 of lesson n920class1
-// more min 3:00 of lesson n921, min 6:56, 10:08
+const expect = require('expect');
 
 var {Users} = require('./users');
 
-// var usersArray = [{
-//   id: 1,
-//   name: 'deka',
-//   room: 'The Office Fans'
-// }, {
-//   id: 2,
-//   name: 'mike',
-//   room: 'Node Course'
-// }, {
-//   id: 3,
-//   name: 'jan',
-//   room: 'Node Course'
-// }];
+describe('Users', () => {
+  var users;
 
-var users = new Users;
-users.addUser(1,'Deka', 'The Office Fans');
-users.addUser(2,'Mike', 'Node Course');
-users.addUser(3,'Jan', 'Node Course');
+  beforeEach(() => {
+    users = new Users;
+    users.users = [{
+      id: 1,
+      name: 'Emiliano',
+      room: 'Javascript fans'
+    }, {
+      id: 2,
+      name: 'Marco',
+      room: 'Travel tips'
+    }, {
+      id: 3,
+      name: 'Dani',
+      room: 'Javascript fans'
+    }];
+  });
 
-console.log('a', users.getUserList('Node Course'));
-console.log('b', users.getUserList('The Office Fans'));
-console.log('c', users.getUser(1));
-console.log('d', users.removeUser(2));
-console.log('e', users.getUserList('Node Course'));
-console.log('f', users.getUser(2));
+  it('should add new user', () => {
+    var users = new Users();
+    var user = {
+      id: '123',
+      name: 'Emiliano',
+      room: 'Node.js'
+    };
+    var res = users.addUser(user.id, user.name, user.room);
+
+    expect(users.users).toEqual([user]);
+    expect(res).toEqual(user);
+  });
+
+  it('should remove user', () => {
+    var res = users.removeUser(1);
+
+    expect(res).toEqual({
+      id: 1,
+      name: 'Emiliano',
+      room: 'Javascript fans'
+    });
+  });
+
+  it('should not remove user', () => {
+    var res = users.removeUser(4);
+
+    expect(res).toBe(undefined);
+  });
+
+  it('should find user', () => {
+    var res = users.getUser(2);
+
+    expect(res).toEqual(users.users[1]);
+  });
+
+  it('should not find user', () => {
+    var res = users.getUser(5);
+
+    expect(res).toEqual(undefined);
+  });
+
+  it('should return names for Javascript fans', () => {
+    var res = users.getUserList('Javascript fans');
+
+    expect(res).toEqual(['Emiliano', 'Dani']);
+  });
+
+  it('should return names for Travel tips', () => {
+    var res = users.getUserList('Travel tips');
+
+    expect(res).toEqual(['Marco']);
+  });
+
+  it('should return unique room names', () => {
+    var res = users.getRoomList();
+
+    expect(res).toEqual(['Javascript fans', 'Travel tips']);
+  });
+});

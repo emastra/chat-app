@@ -8,8 +8,6 @@ describe('generateMessage', () => {
     var text = 'Deka was here';
     var message = generateMessage(from, text);
 
-    // expect(message.createdAt).toBeA('number');
-    // expect(message).toInclude({from, text});
     expect(typeof message.createdAt).toBe('number');
     expect(message).toMatchObject({from, text});
   });
