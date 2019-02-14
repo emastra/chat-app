@@ -8,6 +8,7 @@ select.addEventListener('change', function(ev) {
 
 var socket = io();
 
+// Choose an existing room select button
 select.addEventListener('click', function(ev) {
   socket.emit('updateRoomList', function(rooms) {
     let roomsArr = Array.from(select.options).map(function(opt) {

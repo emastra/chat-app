@@ -1,6 +1,5 @@
 // https://css-tricks.com/now-ever-might-not-need-jquery/
 // https://blog.garstasio.com/you-dont-need-jquery/events/#ancient-browser-support
-
 // https://www.sitepoint.com/get-url-parameters-with-javascript/
 
 var socket = io();
@@ -35,11 +34,12 @@ io.emit {join, createMessage, createLocationMessage}
 
 // On connect
 socket.on('connect', function() {
-  // console.log('Connected to server');
+  console.log('Connected to server');
+
   // The URLSearchParams() constructor creates and returns a new URLSearchParams object. Leading '?' characters are ignored.
   var searchParams = new URLSearchParams(window.location.search); // pass to it the querystring
   var paramsObj = {name: searchParams.get('name'), room: searchParams.get('room')};
-  console.log(paramsObj.room);
+
   // acknowledment function set because if someone doesnt join the room it means they proviedd invalid data and we need to kick them back to the join form
   socket.emit('join', paramsObj, function(err) {
     if (err) {
@@ -52,10 +52,12 @@ socket.on('connect', function() {
   });
 });
 
+// on disconnect
 socket.on('disconnect', function() {
   console.log('Disconnected from server');
 });
 
+// on updateUserList
 socket.on('updateUserList', function(users) {
   var ol = document.createElement('ol');
   users.forEach(function(user) {
@@ -64,46 +66,28 @@ socket.on('updateUserList', function(users) {
     li.textContent = user;
     ol.appendChild(li);
   });
-  // update the dom with new user list (not the ol element but the outer html)
-  //document.getElementById('people').innerHTML = ol.outerHTML;
+  // update the dom with new user list. First remove all, then append the new list.
   document.getElementById('people').innerHTML = '';
   document.getElementById('people').appendChild(ol);
 
 });
 
+// on newMessage
 socket.on('newMessage', function(message) {
-  // time
   var formattedTime = moment(message.createdAt).format('h:mm a');
-  // // create and set elements
-  // var li = document.createElement('li');
-  // li.textContent = `${message.from} ${formattedTime}: ${message.text}`; // instead of innerHTML, textContent has better performance because its value is not parsed as HTML. Moreover, using textContent can prevent XSS attacks.
-  // // append
-  // document.querySelector('#messages').appendChild(li);
   var template = document.getElementById('message-template').innerHTML;
   var html = Mustache.render(template, {
     text: message.text,
     from: message.from,
     createdAt: formattedTime
   });
-  //console.log(html);
-  //document.querySelector('#messages').innerHTML = html;
   document.querySelector('#messages').insertAdjacentHTML('beforeend', html); // The insertAdjacentHTML() method parses the specified text as HTML or XML and inserts the resulting nodes into the DOM tree at a specified position. It does not reparse the element it is being used on, and thus it does not corrupt the existing elements inside that element. This avoids the extra step of serialization, making it much faster than direct innerHTML manipulation.
   scrollToBottom();
 });
 
+// on newLocationMessage
 socket.on('newLocationMessage', function(message) {
-  // time
   var formattedTime = moment(message.createdAt).format('h:mm a');
-  // // create and set elements
-  // var li = document.createElement('li');
-  // var a = document.createElement('a');
-  // a.setAttribute('target', '_blank');
-  // a.textContent = 'My current location';
-  // li.textContent = `${message.from} ${formattedTime}: `;
-  // a.setAttribute('href', message.url);
-  // // append
-  // li.appendChild(a);
-  // document.querySelector('#messages').appendChild(li);
   var template = document.getElementById('location-message-template').innerHTML;
   var html = Mustache.render(template, {
     url: message.url,
@@ -122,8 +106,8 @@ document.querySelector('#message-form').addEventListener('submit', function(ev) 
 
   socket.emit('createMessage', {
     text: messageInput.value
-  }, function() { // acknowledgement ???
-    // reset messageInput ??
+  }, function() {                // 3rd param: acknowledgement
+    // reset messageInput
     messageInput.value = '';
   });
 });
@@ -155,3 +139,25 @@ locationButton.addEventListener('click', function(ev) {
     alert('Unable to fetch location.');
   });
 });
+
+
+// Set href for test-login
+
+const testLink = document.getElementById('test-link');
+const room = getQueryStringValue('room');
+const n = getQueryStringValue('name');
+// get value of a single key available in the queryString
+function getQueryStringValue(key) {
+  return decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent(key).replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+}
+
+if (!n.includes('Test')) {
+  var name = 'Test';
+} else if (n == 'Test') {
+  var name = 'Test-1';
+} else if (n.includes('Test-')) {
+  let num = parseInt(n.split('-')[1]);
+  var name = `Test-${++num}`;
+}
+
+testLink.href = `${location.protocol}//${location.host}${location.pathname}?name=${name}&room=${room}`;
